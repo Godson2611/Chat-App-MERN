@@ -13,10 +13,10 @@ const server = http.createServer(app);
 
 // Initialize Socket.IO server
 const io = new Server(server, {
-    cors: {
-        origin: [`${process.env.URL}`], // Allow requests from localhost:3000
-        methods: ["GET", "POST"], // Allow specified HTTP methods
-    },
+  cors: {
+    origin: [process.env.URL], // Allow requests from localhost:3000
+    methods: ["GET", "POST"], // Allow specified HTTP methods
+  },
 });
 
 // Map to store user IDs and corresponding socket IDs
