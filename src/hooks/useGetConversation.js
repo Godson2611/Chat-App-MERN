@@ -9,7 +9,7 @@ const useGetConversations = () => {
 		const getConversations = async () => {
 			setLoading(true);
 			try {
-				const res = await fetch("/api/user");
+				const res = await fetch(`${import.meta.env.VITE_URL}/api/user`);
 				const data = await res.json();
 				if (data.error) {
 					throw new Error(data.error);
