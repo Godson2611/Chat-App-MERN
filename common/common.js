@@ -23,51 +23,61 @@ const createToken = async (payload, res) => {
     sameSite: "None",
   });
 
+  // WITHOUT CHANGES==================
+
+  // res.cookie("jwt", token, {
+  // 	maxAge: 15 * 24 * 60 * 60 * 1000, // MS
+  // 	httpOnly: true, // prevent XSS attacks cross-site scripting attacks
+  // 	sameSite: "strict", // CSRF attacks cross-site request forgery attacks
+  // 	secure: process.env.NODE_ENV !== "development",
+  // });
+
   return token;
 };
 
 const decodeToken = async (token) => {
-  const payload = jwt.verify(token , process.env.JWT_SECRET);
+  const payload = jwt.verify(token, process.env.JWT_SECRET);
   return payload;
 };
 
-const validate = async (req, res, next) => {
-  try {
-    let token = req.headers.authorization?.split(" ")[1];
-    if (token) {
-      let payload = await decodeToken(token);
-      let currentTime = +new Date() / 1000;
+// FOR MY CLARIFYCATION NOTES ============================================
 
-      if (currentTime < payload.exp) {
-        req.user = payload;
-        next();
-      } else {
-        res.status(400).send({ message: "Token Expired" });
-      }
-    } else {
-      res.status(400).send({ message: "No Token Found" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-};
+// const validate = async (req, res, next) => {
+//   try {
+//     let token = req.headers.authorization?.split(" ")[1];
+//     if (token) {
+//       let payload = await decodeToken(token);
+//       let currentTime = +new Date() / 1000;
 
-const adminGaurd = async (req, res, next) => {
-  let token = req.headers.authorization?.split(" ")[1];
-  if (token) {
-    let payload = await decodeToken(token);
-    if (payload.role === "admin") next();
-    else res.status(400).send({ message: "Only Admins are allowed" });
-  } else {
-    res.status(400).send({ message: "No Token Found" });
-  }
-};
+//       if (currentTime < payload.exp) {
+//         req.user = payload;
+//         next();
+//       } else {
+//         res.status(400).send({ message: "Token Expired" });
+//       }
+//     } else {
+//       res.status(400).send({ message: "No Token Found" });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// };
+
+// const adminGaurd = async (req, res, next) => {
+//   let token = req.headers.authorization?.split(" ")[1];
+//   if (token) {
+//     let payload = await decodeToken(token);
+//     if (payload.role === "admin") next();
+//     else res.status(400).send({ message: "Only Admins are allowed" });
+//   } else {
+//     res.status(400).send({ message: "No Token Found" });
+//   }
+// };
+
 export default {
   hashPassword,
   hashCompare,
   createToken,
-  validate,
-  adminGaurd,
   decodeToken,
 };
