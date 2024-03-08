@@ -55,12 +55,13 @@ const login = async (req, res)=>{
             return res.status(400).json({error: "Invalid username or password"})
         }
 
-        await common.createToken(user._id);
+        await common.createToken(user._id, res);
         res.status(200).json({
-            fullName: user.fullName,
-            username: user.username,
-            profilePic: user.profilePic
-        })
+          _id: user._id,
+          fullName: user.fullName,
+          username: user.username,
+          profilePic: user.profilePic,
+        });
         
     } catch (error) {
         console.log("Error in login controller", error.message)
