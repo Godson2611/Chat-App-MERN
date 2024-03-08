@@ -1,31 +1,35 @@
 import common from "../common/common.js";
 import User from "../models/user.model.js";
 
-const protectRoute = async (req, res, next) =>{
+const protectRoute = async (req, res, next) => {
     try {
         const token = req.cookies.jwt;
-        if(!token){
-            return res.status(401).json({error: "Unauthorized - No Token Provider"})
+        if (!token) {
+            return res.status(401).json({ error: "Unauthorized - No Token Provided" });
         }
-       const decodeToken = common.decodeToken(token)
-       if(!decodeToken){
-        return res.status(401).json({error: "Unauthorized - Invalid Token"});
-       }
 
-       const user = await User.findById((await decodeToken).payload).select("-password");
+        const decodedToken = await common.decodeToken(token);
+        if (!decodedToken) {
+            return res.status(401).json({ error: "Unauthorized - Invalid Token" });
+        }
 
-       if(!user){
-        res.status(404).json({error: "User not found"});
-       }
+        const userId = decodedToken.payload;
+        if (!userId) {
+            return res.status(404).json({ error: "User ID not found in token" });
+        }
 
-       req.user = user;
-       
-       next()
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
 
+        req.user = user;
+        next();
     } catch (error) {
-        console.log("Error in protectRoute middleware", error.message)
-        res.status(500).json({error: 'Internal Server Error'})
+        console.log("Error in protectRoute middleware", error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+};
+
 
 export default {protectRoute}
