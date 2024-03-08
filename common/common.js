@@ -14,20 +14,17 @@ const hashCompare = async (password, hash) => {
 };
 
 const createToken = async (payload, res) => {
-    // if (!payload || typeof payload !== 'string') {
-    //   throw new Error('userId must be provided and must be a string');
-    // }
-    const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRE,
-    });
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    });
-  
-    return token;
-  };
+  const token = jwt.sign({ payload }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+  res.cookie("jwt", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "None",
+  });
+
+  return token;
+};
 
 const decodeToken = async (token) => {
   const payload = jwt.verify(token , process.env.JWT_SECRET);
