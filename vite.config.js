@@ -6,5 +6,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
+    // proxy: {
+    //   "/api": {
+    //     target: `https://chat-app-mern-1-bdml.onrender.com`,
+    //   },
+    // },
   },
 });
